@@ -23,8 +23,6 @@ header{margin-bottom:2rem;padding-bottom:1.25rem;border-bottom:1px solid var(--b
 h1{font-family:'Orbitron',monospace;font-size:clamp(1.4rem,4vw,2rem);font-weight:900;letter-spacing:.04em;line-height:1.2}
 h1 span{color:var(--amber)}
 .subtitle{margin-top:.4rem;font-size:13px;color:var(--text-sec);font-weight:300}
-
-/* banners */
 .warn{display:flex;align-items:flex-start;gap:12px;background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.35);border-radius:var(--r);padding:.85rem 1.1rem;margin-bottom:1rem;font-size:13.5px}
 .warn .icon{font-size:18px;flex-shrink:0;margin-top:1px}
 .warn strong{color:#fca5a5}
@@ -36,11 +34,20 @@ h1 span{color:var(--amber)}
 .bread-banner li b{color:var(--text)}
 .info-bar{background:rgba(59,130,246,.08);border:1px solid rgba(59,130,246,.3);border-radius:var(--r);padding:.65rem 1rem;margin-bottom:1.25rem;font-size:13px;color:var(--blue-l)}
 .info-bar strong{color:#bfdbfe}
-
-/* student ID display */
 .sid-box{background:#060700;border:1px solid #2a2500;border-radius:var(--r);padding:1rem 1.4rem;margin-bottom:1rem;display:inline-flex;flex-direction:column;gap:6px}
 .sid-label{font-size:10px;letter-spacing:.15em;color:var(--text-dim);text-transform:uppercase;font-family:'Orbitron',monospace}
 .sid-seg{font-family:'JetBrains Mono',monospace;font-size:26px;letter-spacing:.25em;color:var(--amber);text-shadow:0 0 10px rgba(245,158,11,.55)}
+
+/* serial monitor widget */
+.serial-win{background:#0d1117;border:1px solid #30363d;border-radius:var(--r);margin-bottom:1.25rem;overflow:hidden;font-family:'JetBrains Mono',monospace}
+.serial-bar{display:flex;align-items:center;gap:8px;background:#161b22;padding:8px 14px;border-bottom:1px solid #30363d}
+.serial-dot{width:11px;height:11px;border-radius:50%}
+.serial-title{font-family:'IBM Plex Sans',sans-serif;font-size:12px;color:#6e7681;margin-left:4px;letter-spacing:.04em}
+.serial-body{padding:14px 18px;font-size:13px;line-height:2}
+.serial-body .sl{display:block;color:#58a6ff}
+.serial-body .sv{color:#3fb950}
+.serial-body .sep{color:#30363d}
+.serial-body .sid-line{color:#e3b341}
 
 /* tabs */
 .tabs{display:flex;gap:6px;margin-bottom:1.5rem;flex-wrap:wrap}
@@ -50,8 +57,6 @@ h1 span{color:var(--amber)}
 .panel{display:none}
 .panel.active{display:block;animation:fadeIn .2s ease}
 @keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
-
-/* section heading */
 .sh{font-family:'Orbitron',monospace;font-size:10px;font-weight:600;letter-spacing:.18em;color:var(--text-dim);text-transform:uppercase;margin:1.5rem 0 .6rem}
 .sh:first-child{margin-top:0}
 
@@ -65,7 +70,7 @@ h1 span{color:var(--amber)}
 pre{padding:1.1rem 1.25rem;overflow-x:auto;font-family:'JetBrains Mono',monospace;font-size:12.5px;line-height:1.72;color:#abb2bf}
 .kw{color:#c792ea}.fn{color:#82aaff}.cm{color:#546e7a;font-style:italic}.str{color:#c3e88d}.num{color:#f78c6c}.tp{color:#ffcb6b}.dp{color:#89ddff}
 
-/* pin / api */
+/* pin / table */
 .pin-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:8px;margin-bottom:1.25rem}
 .pin-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:10px 12px}
 .pin-card .plabel{font-size:11px;color:var(--text-sec);margin-bottom:3px}
@@ -107,9 +112,7 @@ footer{margin-top:3rem;padding-top:1.25rem;border-top:1px solid var(--border);te
 
 <div class="warn">
   <span class="icon">⚠</span>
-  <div>
-    <strong>腳位衝突修正</strong>：MAX7219 CLK = <code>D6</code>，WS2812 原為 <code>D6</code> → 已改為 <code>D8</code>　｜　AHT10 VIN 只能接 <code>3.3V</code>
-  </div>
+  <div><strong>腳位衝突修正</strong>：MAX7219 CLK = <code>D6</code>，WS2812 原為 <code>D6</code> → 已改為 <code>D8</code>　｜　AHT10 VIN 只能接 <code>3.3V</code></div>
 </div>
 
 <div class="bread-banner">
@@ -159,13 +162,30 @@ footer{margin-top:3rem;padding-top:1.25rem;border-top:1px solid var(--border);te
 <!-- ════ PANEL 0 ════ -->
 <div class="panel active" id="p0">
   <div class="info-bar">
-    <strong>開機</strong>：顯示學號 4b330083（3 秒）→ 清除 → 進入循環<br>
     <strong>顯示</strong>：左 4 位 = 溫度 XX.X°C　右 4 位 = 光照 Lux　　<strong>WS2812</strong>：暗&lt;100→藍｜中→綠｜亮&gt;500→紅
   </div>
-  <div class="seg-display">4b330083</div>
-  <p class="seg-label" style="margin-bottom:.75rem">↑ 開機顯示 3 秒後　<span>→ 切換為感測器數值</span></p>
-  <div class="seg-display">25.3&nbsp;&nbsp;0482</div>
-  <p class="seg-label">正常顯示：溫度 25.3°C　<span>光照 482 Lux</span></p>
+
+  <p class="sh">序列埠視窗預覽</p>
+  <div class="serial-win">
+    <div class="serial-bar">
+      <div class="serial-dot" style="background:#ff5f57"></div>
+      <div class="serial-dot" style="background:#febc2e"></div>
+      <div class="serial-dot" style="background:#28c840"></div>
+      <span class="serial-title">序列埠視窗 · 9600 baud</span>
+    </div>
+    <div class="serial-body">
+      <span class="sep">================================</span><br>
+      <span class="sid-line">學號 4B330083</span><br>
+      <span class="sl">溫度：</span><span class="sv">25.3 度</span><br>
+      <span class="sl">光照：</span><span class="sv">482 Lux</span><br>
+      <span class="sep">================================</span><br>
+      <span class="sid-line">學號 4B330083</span><br>
+      <span class="sl">溫度：</span><span class="sv">25.4 度</span><br>
+      <span class="sl">光照：</span><span class="sv">501 Lux</span>
+    </div>
+  </div>
+
+  <p class="sh">完整程式碼</p>
   <div class="code-wrap">
     <div class="code-header">
       <span class="code-lang">Arduino C++ · AHT10 + BH1750</span>
@@ -173,7 +193,6 @@ footer{margin-top:3rem;padding-top:1.25rem;border-top:1px solid var(--border);te
     </div>
     <pre id="c0"><span class="cm">// ── AHT10（溫濕度）+ BH1750（光照）+ MAX7219 + WS2812 ──</span>
 <span class="cm">// AHT10 VIN 接 3.3V！  WS2812 Data=D8（避免與 MAX CLK=D6 衝突）</span>
-<span class="cm">// 須插麵包板：MAX7219、WS2812　不須：AHT10、BH1750（I2C）</span>
 
 <span class="kw">#include</span> <span class="str">&lt;Wire.h&gt;</span>
 <span class="kw">#include</span> <span class="str">&lt;AHT10.h&gt;</span>
@@ -181,8 +200,8 @@ footer{margin-top:3rem;padding-top:1.25rem;border-top:1px solid var(--border);te
 <span class="kw">#include</span> <span class="str">&lt;LedControl.h&gt;</span>
 <span class="kw">#include</span> <span class="str">&lt;BMduino_WS2812.h&gt;</span>
 
-<span class="tp">LedControl</span>    lc <span class="dp">=</span> <span class="tp">LedControl</span>(<span class="num">7</span>, <span class="num">6</span>, <span class="num">5</span>, <span class="num">1</span>); <span class="cm">// Data=D7, CLK=D6, CS=D5</span>
-<span class="tp">BMduino_WS2812</span> BW(<span class="num">10</span>, <span class="num">8</span>);                  <span class="cm">// 10顆, Data=D8</span>
+<span class="tp">LedControl</span>    lc <span class="dp">=</span> <span class="tp">LedControl</span>(<span class="num">7</span>, <span class="num">6</span>, <span class="num">5</span>, <span class="num">1</span>);
+<span class="tp">BMduino_WS2812</span> BW(<span class="num">10</span>, <span class="num">8</span>);
 <span class="tp">AHT10</span>         myAHT10(<span class="num">AHT10_ADDRESS_0X38</span>);
 <span class="tp">BH1750</span>        lightMeter;
 
@@ -190,15 +209,14 @@ footer{margin-top:3rem;padding-top:1.25rem;border-top:1px solid var(--border);te
 <span class="tp">uint16_t</span> lux;
 
 <span class="kw">void</span> <span class="fn">showStudentID</span>() {
-  <span class="cm">// 顯示學號：4 b 3 3 0 0 8 3</span>
-  lc.<span class="fn">setDigit</span>(<span class="num">0</span>, <span class="num">7</span>, <span class="num">4</span>,   <span class="kw">false</span>); <span class="cm">// 4</span>
-  lc.<span class="fn">setChar</span>(<span class="num">0</span>,  <span class="num">6</span>, <span class="str">'b'</span>, <span class="kw">false</span>); <span class="cm">// b</span>
-  lc.<span class="fn">setDigit</span>(<span class="num">0</span>, <span class="num">5</span>, <span class="num">3</span>,   <span class="kw">false</span>); <span class="cm">// 3</span>
-  lc.<span class="fn">setDigit</span>(<span class="num">0</span>, <span class="num">4</span>, <span class="num">3</span>,   <span class="kw">false</span>); <span class="cm">// 3</span>
-  lc.<span class="fn">setDigit</span>(<span class="num">0</span>, <span class="num">3</span>, <span class="num">0</span>,   <span class="kw">false</span>); <span class="cm">// 0</span>
-  lc.<span class="fn">setDigit</span>(<span class="num">0</span>, <span class="num">2</span>, <span class="num">0</span>,   <span class="kw">false</span>); <span class="cm">// 0</span>
-  lc.<span class="fn">setDigit</span>(<span class="num">0</span>, <span class="num">1</span>, <span class="num">8</span>,   <span class="kw">false</span>); <span class="cm">// 8</span>
-  lc.<span class="fn">setDigit</span>(<span class="num">0</span>, <span class="num">0</span>, <span class="num">3</span>,   <span class="kw">false</span>); <span class="cm">// 3</span>
+  lc.<span class="fn">setDigit</span>(<span class="num">0</span>, <span class="num">7</span>, <span class="num">4</span>,   <span class="kw">false</span>);
+  lc.<span class="fn">setChar</span>(<span class="num">0</span>,  <span class="num">6</span>, <span class="str">'b'</span>, <span class="kw">false</span>);
+  lc.<span class="fn">setDigit</span>(<span class="num">0</span>, <span class="num">5</span>, <span class="num">3</span>,   <span class="kw">false</span>);
+  lc.<span class="fn">setDigit</span>(<span class="num">0</span>, <span class="num">4</span>, <span class="num">3</span>,   <span class="kw">false</span>);
+  lc.<span class="fn">setDigit</span>(<span class="num">0</span>, <span class="num">3</span>, <span class="num">0</span>,   <span class="kw">false</span>);
+  lc.<span class="fn">setDigit</span>(<span class="num">0</span>, <span class="num">2</span>, <span class="num">0</span>,   <span class="kw">false</span>);
+  lc.<span class="fn">setDigit</span>(<span class="num">0</span>, <span class="num">1</span>, <span class="num">8</span>,   <span class="kw">false</span>);
+  lc.<span class="fn">setDigit</span>(<span class="num">0</span>, <span class="num">0</span>, <span class="num">3</span>,   <span class="kw">false</span>);
   <span class="fn">delay</span>(<span class="num">3000</span>);
   lc.<span class="fn">clearDisplay</span>(<span class="num">0</span>);
   <span class="fn">delay</span>(<span class="num">500</span>);
@@ -208,7 +226,7 @@ footer{margin-top:3rem;padding-top:1.25rem;border-top:1px solid var(--border);te
   <span class="tp">int</span> v <span class="dp">=</span> (<span class="tp">int</span>)(val <span class="dp">*</span> <span class="num">10</span> <span class="dp">+</span> <span class="num">0.5</span>);
   lc.<span class="fn">setChar</span>(<span class="num">0</span>,  pos,   <span class="str">' '</span>, <span class="kw">false</span>);
   lc.<span class="fn">setDigit</span>(<span class="num">0</span>, pos<span class="dp">-</span><span class="num">1</span>, (v<span class="dp">/</span><span class="num">100</span>)<span class="dp">%</span><span class="num">10</span>, <span class="kw">false</span>);
-  lc.<span class="fn">setDigit</span>(<span class="num">0</span>, pos<span class="dp">-</span><span class="num">2</span>, (v<span class="dp">/</span><span class="num">10</span>)<span class="dp">%</span><span class="num">10</span>,  <span class="kw">true</span>); <span class="cm">// 小數點</span>
+  lc.<span class="fn">setDigit</span>(<span class="num">0</span>, pos<span class="dp">-</span><span class="num">2</span>, (v<span class="dp">/</span><span class="num">10</span>)<span class="dp">%</span><span class="num">10</span>,  <span class="kw">true</span>);
   lc.<span class="fn">setDigit</span>(<span class="num">0</span>, pos<span class="dp">-</span><span class="num">3</span>, v<span class="dp">%</span><span class="num">10</span>,        <span class="kw">false</span>);
 }
 
@@ -223,19 +241,16 @@ footer{margin-top:3rem;padding-top:1.25rem;border-top:1px solid var(--border);te
 <span class="kw">void</span> <span class="fn">setup</span>() {
   Serial.<span class="fn">begin</span>(<span class="num">9600</span>);
   Wire.<span class="fn">begin</span>();
-
   lc.<span class="fn">shutdown</span>(<span class="num">0</span>, <span class="kw">false</span>);
   lc.<span class="fn">setIntensity</span>(<span class="num">0</span>, <span class="num">9</span>);
   lc.<span class="fn">clearDisplay</span>(<span class="num">0</span>);
   BW.<span class="fn">begin</span>();
-
   <span class="kw">while</span> (myAHT10.<span class="fn">begin</span>() <span class="dp">!=</span> <span class="kw">true</span>) {
     Serial.<span class="fn">println</span>(<span class="str">"AHT10 not connected..."</span>);
     <span class="fn">delay</span>(<span class="num">5000</span>);
   }
   lightMeter.<span class="fn">begin</span>();
-
-  <span class="fn">showStudentID</span>(); <span class="cm">// ← 開機顯示學號 4b330083</span>
+  <span class="fn">showStudentID</span>();
 }
 
 <span class="kw">void</span> <span class="fn">loop</span>() {
@@ -243,16 +258,20 @@ footer{margin-top:3rem;padding-top:1.25rem;border-top:1px solid var(--border);te
   humidity <span class="dp">=</span> myAHT10.<span class="fn">readHumidity</span>();
   lux      <span class="dp">=</span> lightMeter.<span class="fn">readLightLevel</span>();
 
-  Serial.<span class="fn">print</span>(<span class="str">"Temp:"</span>);  Serial.<span class="fn">print</span>(temp);
-  Serial.<span class="fn">print</span>(<span class="str">"C  Hum:"</span>); Serial.<span class="fn">print</span>(humidity);
-  Serial.<span class="fn">print</span>(<span class="str">"%  Lux:"</span>); Serial.<span class="fn">println</span>(lux);
+  <span class="cm">// ── 序列埠輸出 ──</span>
+  Serial.<span class="fn">println</span>(<span class="str">"================================"</span>);
+  Serial.<span class="fn">print</span>(<span class="str">"學號 "</span>); Serial.<span class="fn">println</span>(<span class="str">"4B330083"</span>);
+  Serial.<span class="fn">print</span>(<span class="str">"溫度："</span>); Serial.<span class="fn">print</span>(temp, <span class="num">1</span>); Serial.<span class="fn">println</span>(<span class="str">" 度"</span>);
+  Serial.<span class="fn">print</span>(<span class="str">"光照："</span>); Serial.<span class="fn">print</span>(lux);    Serial.<span class="fn">println</span>(<span class="str">" Lux"</span>);
 
-  <span class="fn">dispTemp</span>(<span class="num">7</span>, temp); <span class="cm">// 左4位</span>
-  <span class="fn">dispInt</span>(<span class="num">3</span>,  lux);  <span class="cm">// 右4位</span>
+  <span class="cm">// ── MAX7219 顯示 ──</span>
+  <span class="fn">dispTemp</span>(<span class="num">7</span>, temp);
+  <span class="fn">dispInt</span>(<span class="num">3</span>,  lux);
 
-  <span class="kw">if</span>      (lux <span class="dp">&lt;</span> <span class="num">100</span>) { BW.<span class="fn">fill</span>(<span class="num">0</span>,<span class="num">10</span>,<span class="num">0</span>,<span class="num">0</span>,<span class="num">255</span>); } <span class="cm">// 藍</span>
-  <span class="kw">else if</span> (lux <span class="dp">&lt;</span> <span class="num">500</span>) { BW.<span class="fn">fill</span>(<span class="num">0</span>,<span class="num">10</span>,<span class="num">0</span>,<span class="num">255</span>,<span class="num">0</span>); } <span class="cm">// 綠</span>
-  <span class="kw">else</span>               { BW.<span class="fn">fill</span>(<span class="num">0</span>,<span class="num">10</span>,<span class="num">255</span>,<span class="num">0</span>,<span class="num">0</span>); } <span class="cm">// 紅</span>
+  <span class="cm">// ── WS2812 顏色 ──</span>
+  <span class="kw">if</span>      (lux <span class="dp">&lt;</span> <span class="num">100</span>) { BW.<span class="fn">fill</span>(<span class="num">0</span>,<span class="num">10</span>,<span class="num">0</span>,<span class="num">0</span>,<span class="num">255</span>); }  <span class="cm">// 藍</span>
+  <span class="kw">else if</span> (lux <span class="dp">&lt;</span> <span class="num">500</span>) { BW.<span class="fn">fill</span>(<span class="num">0</span>,<span class="num">10</span>,<span class="num">0</span>,<span class="num">255</span>,<span class="num">0</span>); }  <span class="cm">// 綠</span>
+  <span class="kw">else</span>               { BW.<span class="fn">fill</span>(<span class="num">0</span>,<span class="num">10</span>,<span class="num">255</span>,<span class="num">0</span>,<span class="num">0</span>); }  <span class="cm">// 紅</span>
   BW.<span class="fn">show</span>();
   <span class="fn">delay</span>(<span class="num">1000</span>);
 }</pre>
@@ -262,13 +281,30 @@ footer{margin-top:3rem;padding-top:1.25rem;border-top:1px solid var(--border);te
 <!-- ════ PANEL 1 ════ -->
 <div class="panel" id="p1">
   <div class="info-bar">
-    <strong>開機</strong>：顯示學號 4b330083（3 秒）→ 清除 → 進入循環<br>
     <strong>顯示</strong>：左 4 位 = 溫度 XX.X°C　右 4 位 = 距離 cm　　<strong>WS2812</strong>：近&lt;20→紅｜中→綠｜遠&gt;100→藍
   </div>
-  <div class="seg-display">4b330083</div>
-  <p class="seg-label" style="margin-bottom:.75rem">↑ 開機顯示 3 秒後　<span>→ 切換為感測器數值</span></p>
-  <div class="seg-display">27.8&nbsp;&nbsp;0043</div>
-  <p class="seg-label">正常顯示：溫度 27.8°C　<span>距離 43 cm</span></p>
+
+  <p class="sh">序列埠視窗預覽</p>
+  <div class="serial-win">
+    <div class="serial-bar">
+      <div class="serial-dot" style="background:#ff5f57"></div>
+      <div class="serial-dot" style="background:#febc2e"></div>
+      <div class="serial-dot" style="background:#28c840"></div>
+      <span class="serial-title">序列埠視窗 · 9600 baud</span>
+    </div>
+    <div class="serial-body">
+      <span class="sep">================================</span><br>
+      <span class="sid-line">學號 4B330083</span><br>
+      <span class="sl">溫度：</span><span class="sv">27.8 度</span><br>
+      <span class="sl">距離：</span><span class="sv">43 公分</span><br>
+      <span class="sep">================================</span><br>
+      <span class="sid-line">學號 4B330083</span><br>
+      <span class="sl">溫度：</span><span class="sv">27.9 度</span><br>
+      <span class="sl">距離：</span><span class="sv">41 公分</span>
+    </div>
+  </div>
+
+  <p class="sh">完整程式碼</p>
   <div class="code-wrap">
     <div class="code-header">
       <span class="code-lang">Arduino C++ · AHT10 + HC-SR04</span>
@@ -276,7 +312,6 @@ footer{margin-top:3rem;padding-top:1.25rem;border-top:1px solid var(--border);te
     </div>
     <pre id="c1"><span class="cm">// ── AHT10（溫濕度）+ HC-SR04（超音波）+ MAX7219 + WS2812 ──</span>
 <span class="cm">// AHT10 VIN 接 3.3V！  HC-SR04: Trig=D13, Echo=D12</span>
-<span class="cm">// 須插麵包板：HC-SR04、MAX7219、WS2812　不須：AHT10（I2C）</span>
 
 <span class="kw">#include</span> <span class="str">&lt;Wire.h&gt;</span>
 <span class="kw">#include</span> <span class="str">&lt;AHT10.h&gt;</span>
@@ -327,42 +362,41 @@ footer{margin-top:3rem;padding-top:1.25rem;border-top:1px solid var(--border);te
   Wire.<span class="fn">begin</span>();
   <span class="fn">pinMode</span>(trigPin, OUTPUT);
   <span class="fn">pinMode</span>(echoPin, INPUT);
-
   lc.<span class="fn">shutdown</span>(<span class="num">0</span>, <span class="kw">false</span>);
   lc.<span class="fn">setIntensity</span>(<span class="num">0</span>, <span class="num">9</span>);
   lc.<span class="fn">clearDisplay</span>(<span class="num">0</span>);
   BW.<span class="fn">begin</span>();
-
   <span class="kw">while</span> (myAHT10.<span class="fn">begin</span>() <span class="dp">!=</span> <span class="kw">true</span>) {
     Serial.<span class="fn">println</span>(<span class="str">"AHT10 not connected..."</span>);
     <span class="fn">delay</span>(<span class="num">5000</span>);
   }
-
-  <span class="fn">showStudentID</span>(); <span class="cm">// ← 開機顯示學號 4b330083</span>
+  <span class="fn">showStudentID</span>();
 }
 
 <span class="kw">void</span> <span class="fn">loop</span>() {
   temp     <span class="dp">=</span> myAHT10.<span class="fn">readTemperature</span>();
   humidity <span class="dp">=</span> myAHT10.<span class="fn">readHumidity</span>();
 
-  <span class="fn">digitalWrite</span>(trigPin, LOW);
-  <span class="fn">delayMicroseconds</span>(<span class="num">5</span>);
-  <span class="fn">digitalWrite</span>(trigPin, HIGH);
-  <span class="fn">delayMicroseconds</span>(<span class="num">10</span>);
+  <span class="fn">digitalWrite</span>(trigPin, LOW);  <span class="fn">delayMicroseconds</span>(<span class="num">5</span>);
+  <span class="fn">digitalWrite</span>(trigPin, HIGH); <span class="fn">delayMicroseconds</span>(<span class="num">10</span>);
   <span class="fn">digitalWrite</span>(trigPin, LOW);
   duration <span class="dp">=</span> <span class="fn">pulseIn</span>(echoPin, HIGH);
   cm       <span class="dp">=</span> duration <span class="dp">/</span> <span class="num">58</span>;
 
-  Serial.<span class="fn">print</span>(<span class="str">"Temp:"</span>); Serial.<span class="fn">print</span>(temp);
-  Serial.<span class="fn">print</span>(<span class="str">"C  Dist:"</span>); Serial.<span class="fn">print</span>(cm);
-  Serial.<span class="fn">println</span>(<span class="str">"cm"</span>);
+  <span class="cm">// ── 序列埠輸出 ──</span>
+  Serial.<span class="fn">println</span>(<span class="str">"================================"</span>);
+  Serial.<span class="fn">print</span>(<span class="str">"學號 "</span>); Serial.<span class="fn">println</span>(<span class="str">"4B330083"</span>);
+  Serial.<span class="fn">print</span>(<span class="str">"溫度："</span>); Serial.<span class="fn">print</span>(temp, <span class="num">1</span>); Serial.<span class="fn">println</span>(<span class="str">" 度"</span>);
+  Serial.<span class="fn">print</span>(<span class="str">"距離："</span>); Serial.<span class="fn">print</span>(cm);       Serial.<span class="fn">println</span>(<span class="str">" 公分"</span>);
 
+  <span class="cm">// ── MAX7219 顯示 ──</span>
   <span class="fn">dispTemp</span>(<span class="num">7</span>, temp);
   <span class="fn">dispInt</span>(<span class="num">3</span>,  cm);
 
-  <span class="kw">if</span>      (cm <span class="dp">&lt;</span> <span class="num">20</span>)  { BW.<span class="fn">fill</span>(<span class="num">0</span>,<span class="num">10</span>,<span class="num">255</span>,<span class="num">0</span>,<span class="num">0</span>); }   <span class="cm">// 紅</span>
-  <span class="kw">else if</span> (cm <span class="dp">&lt;</span> <span class="num">100</span>) { BW.<span class="fn">fill</span>(<span class="num">0</span>,<span class="num">10</span>,<span class="num">0</span>,<span class="num">255</span>,<span class="num">0</span>); }   <span class="cm">// 綠</span>
-  <span class="kw">else</span>               { BW.<span class="fn">fill</span>(<span class="num">0</span>,<span class="num">10</span>,<span class="num">0</span>,<span class="num">0</span>,<span class="num">255</span>); }   <span class="cm">// 藍</span>
+  <span class="cm">// ── WS2812 顏色 ──</span>
+  <span class="kw">if</span>      (cm <span class="dp">&lt;</span> <span class="num">20</span>)  { BW.<span class="fn">fill</span>(<span class="num">0</span>,<span class="num">10</span>,<span class="num">255</span>,<span class="num">0</span>,<span class="num">0</span>); }  <span class="cm">// 紅</span>
+  <span class="kw">else if</span> (cm <span class="dp">&lt;</span> <span class="num">100</span>) { BW.<span class="fn">fill</span>(<span class="num">0</span>,<span class="num">10</span>,<span class="num">0</span>,<span class="num">255</span>,<span class="num">0</span>); }  <span class="cm">// 綠</span>
+  <span class="kw">else</span>               { BW.<span class="fn">fill</span>(<span class="num">0</span>,<span class="num">10</span>,<span class="num">0</span>,<span class="num">0</span>,<span class="num">255</span>); }  <span class="cm">// 藍</span>
   BW.<span class="fn">show</span>();
   <span class="fn">delay</span>(<span class="num">500</span>);
 }</pre>
@@ -372,13 +406,30 @@ footer{margin-top:3rem;padding-top:1.25rem;border-top:1px solid var(--border);te
 <!-- ════ PANEL 2 ════ -->
 <div class="panel" id="p2">
   <div class="info-bar">
-    <strong>開機</strong>：顯示學號 4b330083（3 秒）→ 清除 → 進入循環<br>
     <strong>顯示</strong>：左 4 位 = 光照 Lux　右 4 位 = 距離 cm　　<strong>WS2812</strong>：近&lt;20→紅｜中→綠｜遠&gt;100→藍
   </div>
-  <div class="seg-display">4b330083</div>
-  <p class="seg-label" style="margin-bottom:.75rem">↑ 開機顯示 3 秒後　<span>→ 切換為感測器數值</span></p>
-  <div class="seg-display">0318&nbsp;&nbsp;0067</div>
-  <p class="seg-label">正常顯示：光照 318 Lux　<span>距離 67 cm</span></p>
+
+  <p class="sh">序列埠視窗預覽</p>
+  <div class="serial-win">
+    <div class="serial-bar">
+      <div class="serial-dot" style="background:#ff5f57"></div>
+      <div class="serial-dot" style="background:#febc2e"></div>
+      <div class="serial-dot" style="background:#28c840"></div>
+      <span class="serial-title">序列埠視窗 · 9600 baud</span>
+    </div>
+    <div class="serial-body">
+      <span class="sep">================================</span><br>
+      <span class="sid-line">學號 4B330083</span><br>
+      <span class="sl">光照：</span><span class="sv">318 Lux</span><br>
+      <span class="sl">距離：</span><span class="sv">67 公分</span><br>
+      <span class="sep">================================</span><br>
+      <span class="sid-line">學號 4B330083</span><br>
+      <span class="sl">光照：</span><span class="sv">320 Lux</span><br>
+      <span class="sl">距離：</span><span class="sv">65 公分</span>
+    </div>
+  </div>
+
+  <p class="sh">完整程式碼</p>
   <div class="code-wrap">
     <div class="code-header">
       <span class="code-lang">Arduino C++ · BH1750 + HC-SR04</span>
@@ -386,7 +437,6 @@ footer{margin-top:3rem;padding-top:1.25rem;border-top:1px solid var(--border);te
     </div>
     <pre id="c2"><span class="cm">// ── BH1750（光照）+ HC-SR04（超音波）+ MAX7219 + WS2812 ──</span>
 <span class="cm">// HC-SR04: Trig=D13, Echo=D12　BH1750: I2C</span>
-<span class="cm">// 須插麵包板：HC-SR04、MAX7219、WS2812　不須：BH1750（I2C）</span>
 
 <span class="kw">#include</span> <span class="str">&lt;Wire.h&gt;</span>
 <span class="kw">#include</span> <span class="str">&lt;BH1750.h&gt;</span>
@@ -428,37 +478,37 @@ footer{margin-top:3rem;padding-top:1.25rem;border-top:1px solid var(--border);te
   Wire.<span class="fn">begin</span>();
   <span class="fn">pinMode</span>(trigPin, OUTPUT);
   <span class="fn">pinMode</span>(echoPin, INPUT);
-
   lc.<span class="fn">shutdown</span>(<span class="num">0</span>, <span class="kw">false</span>);
   lc.<span class="fn">setIntensity</span>(<span class="num">0</span>, <span class="num">9</span>);
   lc.<span class="fn">clearDisplay</span>(<span class="num">0</span>);
   BW.<span class="fn">begin</span>();
   lightMeter.<span class="fn">begin</span>();
-
-  <span class="fn">showStudentID</span>(); <span class="cm">// ← 開機顯示學號 4b330083</span>
+  <span class="fn">showStudentID</span>();
 }
 
 <span class="kw">void</span> <span class="fn">loop</span>() {
   lux <span class="dp">=</span> lightMeter.<span class="fn">readLightLevel</span>();
 
-  <span class="fn">digitalWrite</span>(trigPin, LOW);
-  <span class="fn">delayMicroseconds</span>(<span class="num">5</span>);
-  <span class="fn">digitalWrite</span>(trigPin, HIGH);
-  <span class="fn">delayMicroseconds</span>(<span class="num">10</span>);
+  <span class="fn">digitalWrite</span>(trigPin, LOW);  <span class="fn">delayMicroseconds</span>(<span class="num">5</span>);
+  <span class="fn">digitalWrite</span>(trigPin, HIGH); <span class="fn">delayMicroseconds</span>(<span class="num">10</span>);
   <span class="fn">digitalWrite</span>(trigPin, LOW);
   duration <span class="dp">=</span> <span class="fn">pulseIn</span>(echoPin, HIGH);
   cm       <span class="dp">=</span> duration <span class="dp">/</span> <span class="num">58</span>;
 
-  Serial.<span class="fn">print</span>(<span class="str">"Lux:"</span>); Serial.<span class="fn">print</span>(lux);
-  Serial.<span class="fn">print</span>(<span class="str">"  Dist:"</span>); Serial.<span class="fn">print</span>(cm);
-  Serial.<span class="fn">println</span>(<span class="str">"cm"</span>);
+  <span class="cm">// ── 序列埠輸出 ──</span>
+  Serial.<span class="fn">println</span>(<span class="str">"================================"</span>);
+  Serial.<span class="fn">print</span>(<span class="str">"學號 "</span>); Serial.<span class="fn">println</span>(<span class="str">"4B330083"</span>);
+  Serial.<span class="fn">print</span>(<span class="str">"光照："</span>); Serial.<span class="fn">print</span>(lux); Serial.<span class="fn">println</span>(<span class="str">" Lux"</span>);
+  Serial.<span class="fn">print</span>(<span class="str">"距離："</span>); Serial.<span class="fn">print</span>(cm);  Serial.<span class="fn">println</span>(<span class="str">" 公分"</span>);
 
+  <span class="cm">// ── MAX7219 顯示 ──</span>
   <span class="fn">dispInt</span>(<span class="num">7</span>, lux);
   <span class="fn">dispInt</span>(<span class="num">3</span>, cm);
 
-  <span class="kw">if</span>      (cm <span class="dp">&lt;</span> <span class="num">20</span>)  { BW.<span class="fn">fill</span>(<span class="num">0</span>,<span class="num">10</span>,<span class="num">255</span>,<span class="num">0</span>,<span class="num">0</span>); }   <span class="cm">// 紅</span>
-  <span class="kw">else if</span> (cm <span class="dp">&lt;</span> <span class="num">100</span>) { BW.<span class="fn">fill</span>(<span class="num">0</span>,<span class="num">10</span>,<span class="num">0</span>,<span class="num">255</span>,<span class="num">0</span>); }   <span class="cm">// 綠</span>
-  <span class="kw">else</span>               { BW.<span class="fn">fill</span>(<span class="num">0</span>,<span class="num">10</span>,<span class="num">0</span>,<span class="num">0</span>,<span class="num">255</span>); }   <span class="cm">// 藍</span>
+  <span class="cm">// ── WS2812 顏色 ──</span>
+  <span class="kw">if</span>      (cm <span class="dp">&lt;</span> <span class="num">20</span>)  { BW.<span class="fn">fill</span>(<span class="num">0</span>,<span class="num">10</span>,<span class="num">255</span>,<span class="num">0</span>,<span class="num">0</span>); }  <span class="cm">// 紅</span>
+  <span class="kw">else if</span> (cm <span class="dp">&lt;</span> <span class="num">100</span>) { BW.<span class="fn">fill</span>(<span class="num">0</span>,<span class="num">10</span>,<span class="num">0</span>,<span class="num">255</span>,<span class="num">0</span>); }  <span class="cm">// 綠</span>
+  <span class="kw">else</span>               { BW.<span class="fn">fill</span>(<span class="num">0</span>,<span class="num">10</span>,<span class="num">0</span>,<span class="num">0</span>,<span class="num">255</span>); }  <span class="cm">// 藍</span>
   BW.<span class="fn">show</span>();
   <span class="fn">delay</span>(<span class="num">500</span>);
 }</pre>
@@ -467,12 +517,11 @@ footer{margin-top:3rem;padding-top:1.25rem;border-top:1px solid var(--border);te
 
 <!-- ════ PANEL 3 速查 ════ -->
 <div class="panel" id="p3">
-
-  <p class="sh">麵包板規定（違者每個零件扣 10 分）</p>
+  <p class="sh">麵包板規定</p>
   <div class="pin-grid">
-    <div class="pin-card must"><div class="plabel">🍞 HC-SR04 超音波</div><div class="pval">必須插麵包板</div></div>
-    <div class="pin-card must"><div class="plabel">🍞 MAX7219 七段顯示器</div><div class="pval">必須插麵包板</div></div>
-    <div class="pin-card must"><div class="plabel">🍞 WS2812 LED</div><div class="pval">必須插麵包板</div></div>
+    <div class="pin-card must"><div class="plabel">🍞 HC-SR04</div><div class="pval">必須插麵包板</div></div>
+    <div class="pin-card must"><div class="plabel">🍞 MAX7219</div><div class="pval">必須插麵包板</div></div>
+    <div class="pin-card must"><div class="plabel">🍞 WS2812</div><div class="pval">必須插麵包板</div></div>
     <div class="pin-card"><div class="plabel">🔌 AHT10</div><div class="pval">I2C 杜邦線即可</div></div>
     <div class="pin-card"><div class="plabel">🔌 BH1750</div><div class="pval">I2C 杜邦線即可</div></div>
   </div>
@@ -489,35 +538,19 @@ footer{margin-top:3rem;padding-top:1.25rem;border-top:1px solid var(--border);te
     <div class="pin-card"><div class="plabel">BH1750 / AHT10</div><div class="pval">I2C (SDA/SCL)</div></div>
   </div>
 
-  <p class="sh">學號顯示函式（共用）</p>
+  <p class="sh">序列埠格式說明</p>
   <div class="code-wrap">
-    <div class="code-header"><span class="code-lang">showStudentID() — 4b330083</span><button class="copy-btn" onclick="copyCode('csid',this)">複製</button></div>
-    <pre id="csid"><span class="kw">void</span> <span class="fn">showStudentID</span>() {
-  <span class="cm">// 4  b  3  3  0  0  8  3</span>
-  <span class="cm">// 7  6  5  4  3  2  1  0  ← MAX7219 位置</span>
-  lc.<span class="fn">setDigit</span>(<span class="num">0</span>, <span class="num">7</span>, <span class="num">4</span>,   <span class="kw">false</span>);
-  lc.<span class="fn">setChar</span>(<span class="num">0</span>,  <span class="num">6</span>, <span class="str">'b'</span>, <span class="kw">false</span>); <span class="cm">// 'b' 用 setChar</span>
-  lc.<span class="fn">setDigit</span>(<span class="num">0</span>, <span class="num">5</span>, <span class="num">3</span>,   <span class="kw">false</span>);
-  lc.<span class="fn">setDigit</span>(<span class="num">0</span>, <span class="num">4</span>, <span class="num">3</span>,   <span class="kw">false</span>);
-  lc.<span class="fn">setDigit</span>(<span class="num">0</span>, <span class="num">3</span>, <span class="num">0</span>,   <span class="kw">false</span>);
-  lc.<span class="fn">setDigit</span>(<span class="num">0</span>, <span class="num">2</span>, <span class="num">0</span>,   <span class="kw">false</span>);
-  lc.<span class="fn">setDigit</span>(<span class="num">0</span>, <span class="num">1</span>, <span class="num">8</span>,   <span class="kw">false</span>);
-  lc.<span class="fn">setDigit</span>(<span class="num">0</span>, <span class="num">0</span>, <span class="num">3</span>,   <span class="kw">false</span>);
-  <span class="fn">delay</span>(<span class="num">3000</span>);       <span class="cm">// 顯示 3 秒</span>
-  lc.<span class="fn">clearDisplay</span>(<span class="num">0</span>);
-  <span class="fn">delay</span>(<span class="num">500</span>);        <span class="cm">// 短暫空白後進入 loop</span>
-}</pre>
-  </div>
+    <div class="code-header"><span class="code-lang">Serial 輸出樣板</span><button class="copy-btn" onclick="copyCode('cser',this)">複製</button></div>
+    <pre id="cser"><span class="cm">// 每次 loop() 都輸出一組，格式固定</span>
+Serial.<span class="fn">println</span>(<span class="str">"================================"</span>);
+Serial.<span class="fn">print</span>(<span class="str">"學號 "</span>);  Serial.<span class="fn">println</span>(<span class="str">"4B330083"</span>);
+Serial.<span class="fn">print</span>(<span class="str">"溫度："</span>); Serial.<span class="fn">print</span>(temp, <span class="num">1</span>); Serial.<span class="fn">println</span>(<span class="str">" 度"</span>);
+Serial.<span class="fn">print</span>(<span class="str">"距離："</span>); Serial.<span class="fn">print</span>(cm);       Serial.<span class="fn">println</span>(<span class="str">" 公分"</span>);
+Serial.<span class="fn">print</span>(<span class="str">"光照："</span>); Serial.<span class="fn">print</span>(lux);      Serial.<span class="fn">println</span>(<span class="str">" Lux"</span>);
 
-  <p class="sh">MAX7219 API</p>
-  <table class="api-table">
-    <tr><th>函數</th><th>說明</th></tr>
-    <tr><td>lc.setDigit(dev,pos,digit,dp)</td><td>顯示數字 0–9。pos：7=最左 / 0=最右。dp=true 顯示小數點</td></tr>
-    <tr><td>lc.setChar(dev,pos,ch,dp)</td><td>字元：<code>' '</code> <code>'-'</code> <code>'b'</code> <code>'H'</code> <code>'E'</code> <code>'L'</code> <code>'P'</code> 等</td></tr>
-    <tr><td>lc.clearDisplay(dev)</td><td>清除全部</td></tr>
-    <tr><td>lc.setIntensity(dev,0–15)</td><td>亮度，範例使用 9</td></tr>
-    <tr><td>lc.shutdown(dev,false)</td><td>關閉省電模式（setup 必備）</td></tr>
-  </table>
+<span class="cm">// Serial.print(temp, 1) → 印出浮點數，保留 1 位小數</span>
+<span class="cm">// Serial.print(cm)      → 整數直接印</span></pre>
+  </div>
 
   <p class="sh">WS2812 常用顏色</p>
   <div class="color-legend">
@@ -528,7 +561,6 @@ footer{margin-top:3rem;padding-top:1.25rem;border-top:1px solid var(--border);te
     <div class="cl-item"><div class="cl-dot" style="background:#fff;border:1px solid #333"></div>白 255,255,255</div>
     <div class="cl-item"><div class="cl-dot" style="background:#111;border:1px solid #444"></div>關 0,0,0</div>
   </div>
-
 </div>
 
 <footer>學號 4B330083 · 嵌入式系統實驗考試 6/16 · BMduino HT32F52367</footer>
